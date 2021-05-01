@@ -1,8 +1,8 @@
-import { run } from '../src/index'
+import { typedefGen } from '../lib'
 
 describe('Test', () => {
   it('output file', () => {
-    run({
+    typedefGen({
       name: 'takashi',
       id: 1,
       hasMoney: true,

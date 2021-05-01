@@ -5,6 +5,7 @@
         "esModuleInterop": true,
         "rootDir": ".",
         "outDir": "dist",
+        "declaration": true,
         "lib": [
             "dom",
             "ES2020"
@@ -16,7 +17,9 @@
     },
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "jest.*.js",
+        "esbuild.*.js"
     ],
     "include": [
         "**/*",

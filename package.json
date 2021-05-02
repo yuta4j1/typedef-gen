@@ -1,6 +1,6 @@
 {
   "name": "typedef-gen",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "./dist/app.js",
   "types": "./dist/index.d.ts",
@@ -14,8 +14,7 @@
   ],
   "scripts": {
     "start": "node dist/app.js",
-    "build": "NODE_ENV=prod node esbuild.config.js",
-    "dev": "NODE_ENV=dev node esbuild.config.js",
+    "build": "node esbuild.config.js",
     "test": "jest"
   },
   "author": "yuta4j1",

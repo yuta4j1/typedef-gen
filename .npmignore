@@ -5,3 +5,4 @@ index.ts
 dist/lib/*.js
 dist/index.js
 renovate.json
+.prettierrc

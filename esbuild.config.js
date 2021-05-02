@@ -1,8 +1,9 @@
-require("esbuild")
+require('esbuild')
   .build({
-    entryPoints: ["index.ts"],
+    entryPoints: ['index.ts'],
     bundle: true,
+    minify: process.env.NODE_ENV === 'prod',
     platform: 'node',
-    outfile: "dist/app.js",
+    outfile: 'dist/app.js',
   })
-  .catch(() => process.exit(1));
+  .catch(() => process.exit(1))

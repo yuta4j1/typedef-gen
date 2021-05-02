@@ -1,1 +1,7 @@
 jest.config.js
+tsconfig.json
+esbuild.config.js
+index.ts
+dist/lib/*.js
+dist/index.js
+renovate.json

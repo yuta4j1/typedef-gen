@@ -1,7 +1,9 @@
 {
   "name": "typedef-gen",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
+  "main": "./dist/app.js",
+  "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yuta4j1/typedef-gen.git"
@@ -12,7 +14,8 @@
   ],
   "scripts": {
     "start": "node dist/app.js",
-    "build": "node esbuild.config.js",
+    "build": "NODE_ENV=prod node esbuild.config.js",
+    "dev": "NODE_ENV=dev node esbuild.config.js",
     "test": "jest"
   },
   "author": "yuta4j1",

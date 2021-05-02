@@ -5,5 +5,5 @@ export function typedefGen(data: Object): void {
   // ファイル名など、CLIオプションでカスタマイズできるようにする
   const codeString = compile(data)
   // ファイル出力
-  fs.writeFileSync('out/typedef.d.ts', codeString)
+  fs.writeFileSync('typedef.d.ts', codeString)
 }

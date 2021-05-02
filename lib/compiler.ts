@@ -27,11 +27,7 @@ export function compile(obj: Object): string {
         `
     })}`
 
-  const resultFile = ts.createSourceFile(
-    'out.ts',
-    code,
-    ts.ScriptTarget.Latest
-  )
+  const resultFile = ts.createSourceFile('out.ts', code, ts.ScriptTarget.Latest)
 
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed })
 
@@ -46,20 +42,36 @@ export function compile(obj: Object): string {
 
 function convertKeyTypeObject(
   obj: Object,
-  stock: TypeDef[],
+  typeDefs: TypeDef[],
   typeName?: string
 ): void {
+  let srcObj = obj
+  if (Array.isArray(obj)) {
+    srcObj = obj[0]
+  }
   let retObj = {}
-  for (const [key, value] of Object.entries(obj)) {
+  for (const [key, value] of Object.entries(srcObj)) {
     if (typeof value === 'object') {
-      let typeName = convertPascalCase(key)
-      convertKeyTypeObject(value, stock, typeName)
-      retObj[key] = typeName
+      if (Array.isArray(value)) {
+        // 配列の場合
+        if (typeof value[0] === 'object') {
+          let typeName = convertPascalCase(key)
+          convertKeyTypeObject(value[0], typeDefs, typeName)
+          retObj[key] = typeName + '[]'
+        } else {
+          let typeName = typeString(value[0])
+          retObj[key] = typeName + '[]'
+        }
+      } else {
+        let typeName = convertPascalCase(key)
+        convertKeyTypeObject(value, typeDefs, typeName)
+        retObj[key] = typeName
+      }
     } else {
       retObj[key] = typeString(value)
     }
   }
-  stock.push({ typeName: typeName || 'Root', def: retObj })
+  typeDefs.push({ typeName: typeName || 'Root', def: retObj })
 }
 
 function typeString(data: any): string {

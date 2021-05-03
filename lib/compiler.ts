@@ -46,31 +46,44 @@ function convertKeyTypeObject(
   typeName?: string
 ): void {
   let srcObj = obj
+  let retObj = {}
   if (Array.isArray(obj)) {
     srcObj = obj[0]
   }
-  let retObj = {}
-  for (const [key, value] of Object.entries(srcObj)) {
+  if (isIndexStringKey(srcObj)) {
+    // キー文字列が不定の場合
+    let keyName = '[key: string]'
+    let [, value] = Object.entries(srcObj)[0]
     if (typeof value === 'object') {
-      if (Array.isArray(value)) {
-        // 配列の場合
-        if (typeof value[0] === 'object') {
-          let typeName = convertPascalCase(key)
-          convertKeyTypeObject(value[0], typeDefs, typeName)
-          retObj[key] = typeName + '[]'
+      convertKeyTypeObject(value, typeDefs, typeName)
+      retObj[keyName] = typeName
+    } else {
+      retObj[keyName] = typeString(value)
+    }
+  } else {
+    for (const [key, value] of Object.entries(srcObj)) {
+      if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+          // 配列の場合
+          if (typeof value[0] === 'object') {
+            let typeName = convertPascalCase(key)
+            convertKeyTypeObject(value[0], typeDefs, typeName)
+            retObj[key] = typeName + '[]'
+          } else {
+            let typeName = typeString(value[0])
+            retObj[key] = typeName + '[]'
+          }
         } else {
-          let typeName = typeString(value[0])
-          retObj[key] = typeName + '[]'
+          let typeName = convertPascalCase(key)
+          convertKeyTypeObject(value, typeDefs, typeName)
+          retObj[key] = typeName
         }
       } else {
-        let typeName = convertPascalCase(key)
-        convertKeyTypeObject(value, typeDefs, typeName)
-        retObj[key] = typeName
+        retObj[key] = typeString(value)
       }
-    } else {
-      retObj[key] = typeString(value)
     }
   }
+
   typeDefs.push({ typeName: typeName || 'Root', def: retObj })
 }
 
@@ -85,6 +98,22 @@ function typeString(data: any): string {
     default:
       return 'any'
   }
+}
+
+// キーがstring literalの場合、キー文字列は可変なので、
+// その場合の処理分岐を行うために判定を行いたい。
+// 現状、ハイフン'-' とピリオド '.' が含まれる文字列に関しては、string literalである
+// という判定を行うが、より正確な判定を行うよう修正するべき
+function isIndexStringKey(data: Object): boolean {
+  const keys = Object.keys(data)
+  if (keys.length === 0) {
+    return false
+  }
+  const filtered = Object.keys(data).filter((v) => {
+    return v.includes('-') || v.includes('.')
+  })
+
+  return filtered.length > 0
 }
 
 function convertPascalCase(src: string): string {
